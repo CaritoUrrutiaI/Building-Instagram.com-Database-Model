@@ -8,23 +8,52 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
+class User(Base):
+    __tablename__ = 'User'
+    # Here we define columns for the table User.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    user_name = Column(String(50), unique=True)
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    e_mail= Column(String(250))
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
+class Follower(Base):
+    __tablename__ = 'Follower'
+    # Here we define columns for the table Follower
+    # Notice that each column is also a normal Python instance attribute.
+    user_from_id = Column(Integer, primary_key=True)
+    user_to_id = Column(Integer, ForeignKey('User.id'))
+    Follower = relationship (User)
+    User = relationship (Follower)
+    
+class Comment(Base):
+    __tablename__ = 'Comment'
+    # Here we define columns for the table User.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    comment_text = Column(String(500))
+    autor_id = Column(String(50))
+    post_id = Column(Integer, ForeignKey('User.id'))
+    Comment = relationship(User)
+
+class Post(Base):
+    __tablename__ = 'Post'
+    # Here we define columns for the table User.
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('Comment.id'))
+    Post = relationship(Comment)
+
+class Media(Base):
+    __tablename__ = 'Media'
+    # Here we define columns for the table User.
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    type = Column(String(500))
+    url = Column(String(50))
+    post_id = Column(String(50), ForeignKey('Post.id'))
+    Media = relationship(Post)
 
     def to_dict(self):
         return {}
